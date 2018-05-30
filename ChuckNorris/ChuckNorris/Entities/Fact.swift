@@ -22,4 +22,17 @@ struct Fact: Decodable {
         case description = "value"
         case category
     }
+    
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.id = try container.decode(String.self, forKey: .id)
+        self.url = try container.decode(String.self, forKey: .url)
+        self.iconUrl = try container.decode(String.self, forKey: .iconUrl)
+        self.description = try container.decode(String.self, forKey: .description)
+        if let result = try container.decodeIfPresent([String].self, forKey: .category) {
+            self.category = result.map(Category.init)
+        } else {
+            self.category = []
+        }
+    }
 }
